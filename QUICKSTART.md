@@ -6,7 +6,8 @@
 
 ```bash
 # 进入项目目录
-cd .
+# 进入项目目录
+cd claude-imgbed
 
 # 一键构建（前端+后端）
 make build

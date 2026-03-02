@@ -43,7 +43,8 @@
 ### 1. 构建
 
 ```bash
-cd .
+# 进入项目目录
+cd claude-imgbed
 make build
 ```
 
