@@ -11,7 +11,7 @@
 
 ```bash
 # 克隆或进入项目目录
-cd /config/Projects/imgbed
+cd .
 
 # 方式一：使用 Makefile 一键构建（推荐）
 make build

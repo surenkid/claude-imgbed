@@ -43,7 +43,7 @@
 ### 1. 构建
 
 ```bash
-cd /config/Projects/imgbed
+cd .
 make build
 ```
 
