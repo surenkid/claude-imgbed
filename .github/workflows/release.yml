@@ -1,0 +1,104 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build and Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.21'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Get version
+        id: version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+
+      - name: Build frontend
+        run: |
+          cd web
+          npm install
+          npm run build
+
+      - name: Build binaries
+        run: |
+          # Linux AMD64
+          GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o claude-imgbed-linux-amd64 cmd/server/main.go
+
+          # Linux ARM64
+          GOOS=linux GOARCH=arm64 go build -ldflags="-s -w" -o claude-imgbed-linux-arm64 cmd/server/main.go
+
+          # macOS AMD64
+          GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" -o claude-imgbed-darwin-amd64 cmd/server/main.go
+
+          # macOS ARM64 (Apple Silicon)
+          GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w" -o claude-imgbed-darwin-arm64 cmd/server/main.go
+
+          # Windows AMD64
+          GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o claude-imgbed-windows-amd64.exe cmd/server/main.go
+
+      - name: Create checksums
+        run: |
+          sha256sum claude-imgbed-* > checksums.txt
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            claude-imgbed-linux-amd64
+            claude-imgbed-linux-arm64
+            claude-imgbed-darwin-amd64
+            claude-imgbed-darwin-arm64
+            claude-imgbed-windows-amd64.exe
+            checksums.txt
+            config.yaml
+          body: |
+            ## Claude-ImgBed ${{ steps.version.outputs.VERSION }}
+
+            ### 📦 下载说明
+
+            根据你的系统选择对应的二进制文件：
+
+            - **Linux (x64)**: `claude-imgbed-linux-amd64`
+            - **Linux (ARM64)**: `claude-imgbed-linux-arm64`
+            - **macOS (Intel)**: `claude-imgbed-darwin-amd64`
+            - **macOS (Apple Silicon)**: `claude-imgbed-darwin-arm64`
+            - **Windows (x64)**: `claude-imgbed-windows-amd64.exe`
+
+            ### 🚀 快速开始
+
+            1. 下载对应平台的二进制文件
+            2. 下载 `config.yaml` 配置文件
+            3. 修改配置文件中的 `auth.token`
+            4. 运行：`./claude-imgbed` (Linux/macOS) 或 `claude-imgbed-windows-amd64.exe` (Windows)
+
+            ### 📝 完整文档
+
+            查看 [README.md](https://github.com/surenkid/claude-imgbed#readme) 获取详细使用说明。
+
+            ### ✅ 校验文件完整性
+
+            ```bash
+            sha256sum -c checksums.txt
+            ```
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
