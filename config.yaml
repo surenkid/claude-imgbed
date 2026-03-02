@@ -1,0 +1,27 @@
+server:
+  port: 8080
+  host: 0.0.0.0
+
+auth:
+  token: "your-custom-token-here"
+
+upload:
+  max_size: 5242880  # 5MB
+  allowed_types:
+    - image/jpeg
+    - image/png
+    - image/gif
+    - image/webp
+  storage_path: "./uploads"
+
+image:
+  max_dimension: 2000
+  quality: 90
+  thumbnail_size: 300
+
+rate_limit:
+  requests_per_minute: 10
+  burst: 5
+
+cache:
+  recent_uploads_size: 100

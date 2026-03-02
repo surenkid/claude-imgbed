@@ -1,0 +1,56 @@
+# Binaries
+imgbed
+imgbed-*
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Test binary
+*.test
+
+# Output of the go coverage tool
+*.out
+
+# Dependency directories
+vendor/
+
+# Go workspace file
+go.work
+go.sum
+
+# Uploads directory
+uploads/*
+!uploads/.gitkeep
+
+# Config overrides
+config.local.yaml
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+nohup.out
+
+# Frontend
+web/node_modules/
+web/dist/
+web/.vite/
+web/package-lock.json
+web/yarn.lock
+web/pnpm-lock.yaml
+
+# Claude
+.claude/
+
+# Runtime
+*.pid
